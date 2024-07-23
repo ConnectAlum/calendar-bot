@@ -14,14 +14,12 @@ const test = (event: CalEvent) => {
 	const keywords = ["demo", "pitch"];
 	const description = event.description?.toLowerCase();
 	const summary = event.summary?.toLowerCase();
+	if (contains(description, ["ignore"]) || contains(summary, ["ignore"])) {
+		return false;
+	}
 
 	const color = event.colorId === "6";
 	const containsKeywords = contains(description, keywords) || contains(summary, keywords);
-	console.log({
-		name: event.summary,
-		color,
-		containsKeywords
-	})
 	return color || containsKeywords;
 }
 
@@ -39,7 +37,10 @@ export const getEvents = async (env: Env, days: number = 7) => {
 	})
 	if (!response.ok) {
 		console.error('Failed to fetch calendar list', response.status, response.statusText);
-		return [];
+		if (response.status === 401) {
+			throw new Error('No token');
+		}
+		throw new Error('Failed to fetch calendar list');
 	}
 	const data = await response.json() as EventsResponse;
 	return data.items;

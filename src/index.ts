@@ -40,7 +40,7 @@ router.get('/oauth/callback', async (request, env) => {
 	if (success) {
 		return new Response('Successfully authenticated with Google!');
 	} else {
-		return new Response('Failed to authenticate with Google.', { status: 500 });
+		return new Response('Failed to authenticate with Google. Try revoking the app and re-authorizing.', { status: 500 });
 	}
 });
 
@@ -100,7 +100,7 @@ router.post('/', async (request, env) => {
 									description: e.map((event) => {
 										const date = new Date(event.start?.dateTime ?? event.start?.date ?? 0);
 										const ts = `<t:${Math.floor(date.getTime() / 1000)}>`;
-										return `**${event.summary}**\n${ts}`;
+										return `**[${event.summary}](${event.htmlLink})**\n${ts}`;
 									}).join('\n\n'),
 									color: 0x03fcfc,
 									footer: {
@@ -118,7 +118,7 @@ router.post('/', async (request, env) => {
 						return new JsonResponse({
 							type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
 							data: {
-								content: `No token! Please [auth with google](${env.BASE_URL}/oauth)`,
+								content: `Token expired! Please [auth with google](${env.BASE_URL}/oauth)`,
 								flags: InteractionResponseFlags.EPHEMERAL,
 							},
 						});
