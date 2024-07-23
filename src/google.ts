@@ -47,7 +47,9 @@ export const getWorkingToken = async (env: Env) => {
 	if (!expire || !token || !refreshToken) {
 		return false;
 	}
+	console.log({ expire, time: new Date().getTime()})
 	if (parseInt(expire) < new Date().getTime()) {
+		console.log('Token expired, refreshing');
 		const data = await fetch('https://oauth2.googleapis.com/token', {
 			method: 'POST',
 			headers: {
@@ -61,11 +63,14 @@ export const getWorkingToken = async (env: Env) => {
 			})
 		});
 		const newToken = await data.json() as { access_token: string, expires_in: number };
+		console.log({ newToken });
 		if (!newToken.access_token) {
 			return false;
 		}
 		env.connect_calendar.put('google_token', newToken.access_token);
 		env.connect_calendar.put('google_token_expire', (new Date().getTime() + newToken.expires_in * 1000).toString());
+	} else {
+		console.log('Token still valid');
 	}
 	return await env.connect_calendar.get('google_token', 'text');
 }
