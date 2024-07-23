@@ -5,12 +5,7 @@ interface Env {
 	DISCORD_APPLICATION_ID: string;
 	DISCORD_TOKEN: string;
 
-	GOOGLE_OAUTH_CLIENT_ID: string;
-	GOOGLE_OAUTH_CLIENT_SECRET: string;
-	GOOGLE_API_KEY: string;
-	BASE_URL: string;
+	GOOGLE_SERVICE_ACCOUNT: string;
 
 	CALENDAR_ID: string;
-
-	connect_calendar: KVNamespace;
 }

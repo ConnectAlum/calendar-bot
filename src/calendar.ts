@@ -39,11 +39,12 @@ export const getEvents = async (env: Env, days: number = 7, _tries: number = 0):
 	if (!response.ok) {
 		console.error('Failed to fetch calendar list', response.status, response.statusText);
 		if (response.status === 401) {
-			if (_tries === 0) { // band-aid patch; token expired early, let's try to refetch
+			/*if (_tries === 0) { // band-aid patch; token expired early, let's try to refetch
 				console.log('Token expired early, trying to refetch');
 				await env.connect_calendar.put('google_token_expire', '-1');
 				return await getEvents(env, days, 1);
 			}
+				*/
 			throw new Error('No token');
 		}
 		throw new Error('Failed to fetch calendar list');
